@@ -475,8 +475,10 @@
         width: 8px;
         height: 15px;
         border-radius: 2px;
-        animation: confettiFall 1.45s cubic-bezier(0.12, 0.76, 0.25, 1) forwards;
+        opacity: 0;
+        transform: translate3d(0, -30px, 0) rotate(0);
         box-shadow: 0 0 8px rgba(255, 255, 255, 0.65);
+        will-change: opacity, transform;
       }
       .float-gem {
         position: absolute;
@@ -1086,18 +1088,39 @@
           var colors = ["#37c8ff", "#fff26c", "#ff8c2a", "#ff4ba8", "#ffffff"];
           for (var i = 0; i < 72; i++) {
             var piece = document.createElement("span");
+            var delay = Math.random() * 280;
+            var dx = (Math.random() - 0.5) * 360;
+            var dy = 160 + Math.random() * 250;
+            var rot = (Math.random() - 0.5) * 900;
             piece.className = "confetti";
             piece.style.left = 178 + (Math.random() - 0.5) * 40 + "px";
             piece.style.top = 252 + (Math.random() - 0.5) * 30 + "px";
             piece.style.background = colors[i % colors.length];
-            piece.style.setProperty("--dx", (Math.random() - 0.5) * 360 + "px");
-            piece.style.setProperty("--dy", 160 + Math.random() * 250 + "px");
-            piece.style.setProperty(
-              "--rot",
-              (Math.random() - 0.5) * 900 + "deg",
-            );
-            piece.style.animationDelay = Math.random() * 0.28 + "s";
             fx.appendChild(piece);
+            setTimeout(
+              (function (node, x, y, rotation) {
+                return function () {
+                  if (!node.parentNode) {
+                    return;
+                  }
+                  node.style.transition =
+                    "opacity 0.14s ease-out, transform 1.45s cubic-bezier(0.12, 0.76, 0.25, 1)";
+                  node.style.webkitTransition = node.style.transition;
+                  node.style.opacity = "1";
+                  node.style.transform =
+                    "translate3d(" + x + "px," + y + "px,0) rotate(" + rotation + "deg)";
+                  node.style.webkitTransform = node.style.transform;
+                  setTimeout(function () {
+                    if (node.parentNode) {
+                      node.style.transition = "opacity 0.42s ease-in";
+                      node.style.webkitTransition = node.style.transition;
+                      node.style.opacity = "0";
+                    }
+                  }, 1050);
+                };
+              })(piece, dx, dy, rot),
+              delay,
+            );
             setTimeout(
               (function (node) {
                 return function () {
