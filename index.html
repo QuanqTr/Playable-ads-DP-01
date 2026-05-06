@@ -672,6 +672,7 @@
         }
       }
     </style>
+    <script src="mraid.js"></script>
   </head>
   <body>
     <div id="shell">
@@ -756,6 +757,7 @@
         var currentScale = 1;
         var started = false;
         var ended = false;
+        var isAdViewable = true;
         var step = 0;
         var gemAudio = null;
         var congratsAudio = null;
@@ -814,6 +816,49 @@
             zoomAudio.preload = "auto";
             zoomAudio.volume = 0.85;
           } catch (e) {}
+        }
+
+        function updateViewableState(value) {
+          if (typeof value === "boolean") {
+            isAdViewable = value;
+          } else if (
+            window.mraid &&
+            typeof window.mraid.isViewable === "function"
+          ) {
+            isAdViewable = window.mraid.isViewable();
+          } else {
+            isAdViewable = true;
+          }
+        }
+
+        function onMraidReady() {
+          updateViewableState();
+        }
+
+        function initMraid() {
+          if (!window.mraid) {
+            onMraidReady();
+            return;
+          }
+          try {
+            if (
+              typeof window.mraid.getState === "function" &&
+              window.mraid.getState() === "loading" &&
+              typeof window.mraid.addEventListener === "function"
+            ) {
+              window.mraid.addEventListener("ready", onMraidReady);
+            } else {
+              onMraidReady();
+            }
+            if (typeof window.mraid.addEventListener === "function") {
+              window.mraid.addEventListener(
+                "viewableChange",
+                updateViewableState,
+              );
+            }
+          } catch (e) {
+            onMraidReady();
+          }
         }
 
         function buildBoard() {
@@ -1070,6 +1115,10 @@
         }
 
         function storeUrl() {
+          var userAgent = navigator.userAgent || "";
+          if (/iPad|iPhone|iPod/i.test(userAgent)) {
+            return IOS_URL;
+          }
           return ANDROID_URL;
         }
 
@@ -1093,6 +1142,7 @@
           window.open(url, "_blank");
         }
 
+        initMraid();
         fitAd();
         window.addEventListener("resize", fitAd);
         initAssets();
@@ -1109,7 +1159,7 @@
         });
         cta.addEventListener("click", openStore);
         setInterval(function () {
-          if (!ended) {
+          if (!ended && isAdViewable) {
             burst(80 + Math.random() * 198, 120 + Math.random() * 360, 1);
           }
         }, 1150);
