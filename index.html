@@ -364,18 +364,24 @@
         position: absolute;
         left: 50%;
         top: 286px;
-        width: 92px;
-        height: 92px;
+        width: 116px;
+        height: 116px;
         border-radius: 50%;
         transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
         background: radial-gradient(
           circle,
-          rgba(255, 255, 255, 0.95),
-          rgba(255, 220, 95, 0.7) 28%,
-          transparent 67%
+          rgba(255, 255, 255, 1) 0%,
+          rgba(255, 246, 135, 0.92) 22%,
+          rgba(255, 187, 46, 0.48) 46%,
+          rgba(255, 170, 31, 0) 74%
         );
-        filter: blur(1px);
+        box-shadow:
+          0 0 22px rgba(255, 255, 255, 0.95),
+          0 0 42px rgba(255, 208, 48, 0.78);
+        opacity: 0.82;
         animation: pulseGlow 1.25s ease-in-out infinite;
+        -webkit-animation: pulseGlow 1.25s ease-in-out infinite;
         pointer-events: none;
       }
       .cta {
@@ -436,14 +442,17 @@
           transparent 66%
         );
         animation: flashPop 0.85s ease-out forwards;
+        -webkit-animation: flashPop 0.85s ease-out forwards;
       }
       .spark {
         position: absolute;
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
+        opacity: 0;
         transform: translate(-50%, -50%) scale(0.2);
+        -webkit-transform: translate(-50%, -50%) scale(0.2);
         animation: sparkPop 0.7s ease-out forwards;
-        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95));
+        -webkit-animation: sparkPop 0.7s ease-out forwards;
       }
       .spark:before,
       .spark:after {
@@ -455,10 +464,13 @@
         height: 100%;
         border-radius: 4px;
         background: #fff;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
         transform: translateX(-50%);
+        -webkit-transform: translateX(-50%);
       }
       .spark:after {
         transform: translateX(-50%) rotate(90deg);
+        -webkit-transform: translateX(-50%) rotate(90deg);
       }
       .spark i {
         position: absolute;
@@ -469,6 +481,8 @@
         border-radius: 50%;
         background: radial-gradient(circle, #fff, #ffe27a 54%, transparent 64%);
         transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        box-shadow: 0 0 9px rgba(255, 239, 104, 0.9);
       }
       .confetti {
         position: absolute;
@@ -477,6 +491,7 @@
         border-radius: 2px;
         opacity: 0;
         transform: translate3d(0, -30px, 0) rotate(0);
+        -webkit-transform: translate3d(0, -30px, 0) rotate(0);
         box-shadow: 0 0 8px rgba(255, 255, 255, 0.65);
         will-change: opacity, transform;
       }
@@ -627,6 +642,19 @@
           transform: translate(-50%, -50%) scale(1.45) rotate(45deg);
         }
       }
+      @-webkit-keyframes sparkPop {
+        0% {
+          opacity: 0;
+          -webkit-transform: translate(-50%, -50%) scale(0.1) rotate(0);
+        }
+        28% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          -webkit-transform: translate(-50%, -50%) scale(1.45) rotate(45deg);
+        }
+      }
       @keyframes flashPop {
         0% {
           opacity: 0;
@@ -638,6 +666,19 @@
         100% {
           opacity: 0;
           transform: scale(1.28);
+        }
+      }
+      @-webkit-keyframes flashPop {
+        0% {
+          opacity: 0;
+          -webkit-transform: scale(0.45);
+        }
+        22% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          -webkit-transform: scale(1.28);
         }
       }
       @keyframes confettiFall {
@@ -656,12 +697,23 @@
       @keyframes pulseGlow {
         0%,
         100% {
-          opacity: 0.5;
-          transform: translate(-50%, -50%) scale(0.76);
+          opacity: 0.72;
+          transform: translate(-50%, -50%) scale(0.82);
         }
         50% {
           opacity: 1;
-          transform: translate(-50%, -50%) scale(1.1);
+          transform: translate(-50%, -50%) scale(1.12);
+        }
+      }
+      @-webkit-keyframes pulseGlow {
+        0%,
+        100% {
+          opacity: 0.72;
+          -webkit-transform: translate(-50%, -50%) scale(0.82);
+        }
+        50% {
+          opacity: 1;
+          -webkit-transform: translate(-50%, -50%) scale(1.12);
         }
       }
       @keyframes floatGem {
@@ -1103,6 +1155,7 @@
                   if (!node.parentNode) {
                     return;
                   }
+                  node.offsetWidth;
                   node.style.transition =
                     "opacity 0.14s ease-out, transform 1.45s cubic-bezier(0.12, 0.76, 0.25, 1)";
                   node.style.webkitTransition = node.style.transition;
